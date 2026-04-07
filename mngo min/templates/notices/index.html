@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %} - Notices & Bot{% endblock %}
+{% block page_title %}Notifications System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-4">
+        <!-- Send Notice -->
+        <div class="col-lg-5">
+            <div class="card dash-card h-100 bg-primary text-white border-0" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-1"><i class="fa-regular fa-paper-plane me-2"></i> Broadcast Notice</h5>
+                    <p class="small text-white-50 mb-4">Send alerts via Dashboard and Telegram Bot.</p>
+                    
+                    <form action="{{ url_for('notice.send_notice') }}" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-white-50">NOTICE TITLE</label>
+                            <input type="text" name="title" class="form-control bg-white border-0 shadow-none" placeholder="e.g. Exam Schedule Release" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-white-50">AUDIENCE</label>
+                            <select name="audience" class="form-select bg-white border-0 shadow-none" required>
+                                <option>All Students & Teachers</option>
+                                <option>Students Only</option>
+                                <option>Teachers Only</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-white-50">MESSAGE BODY</label>
+                            <textarea name="message" class="form-control bg-white border-0 shadow-none" rows="4" placeholder="Type your message here..." required></textarea>
+                        </div>
+                        
+                        {% if session.get('role') == 'admin' %}
+                        <button type="submit" class="btn btn-light text-primary w-100 fw-bold shadow-sm">
+                            <i class="fa-brands fa-telegram me-2"></i> Send Now
+                        </button>
+                        {% else %}
+                        <div class="alert alert-light text-dark text-center py-2 mb-0">Admins only.</div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notice History -->
+        <div class="col-lg-7">
+            <h5 class="fw-bold mb-3">Notice History Logs</h5>
+            <div class="list-group shadow-sm">
+                {% for n in notices %}
+                <div class="list-group-item list-group-item-action p-4 border-0 mb-2 rounded dash-card">
+                    <div class="d-flex w-100 justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0 fw-bold text-primary">{{ n.title }}</h6>
+                        <small class="text-muted">{{ n.date }}</small>
+                    </div>
+                    <p class="mb-2 text-dark">{{ n.message }}</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-light text-dark border me-2"><i class="fa-solid fa-users me-1"></i> {{ n.audience }}</span>
+                        <span class="badge bg-success-soft text-success"><i class="fa-solid fa-check-double me-1"></i> {{ n.status }}</span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center p-5 text-muted dash-card">
+                    <i class="fa-regular fa-bell-slash fs-1 mb-3 text-light"></i>
+                    <h6>No notices sent yet.</h6>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %} - Subjects{% endblock %}
+{% block page_title %}Subject Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-4">
+        <!-- Add Subject Form -->
+        <div class="col-lg-4">
+            <div class="card dash-card h-100">
+                <div class="card-header bg-white pt-4 pb-0 border-0">
+                    <h6 class="fw-bold"><i class="fa-solid fa-plus me-2 text-warning"></i>Assign Subject</h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('academic.add_subject') }}" method="POST">
+                        <div class="mb-2">
+                            <label class="form-label text-muted small fw-bold">SUBJECT CODE & NAME</label>
+                            <div class="input-group">
+                                <input type="text" name="subject_code" class="form-control" placeholder="CS101" style="max-width:30%" required>
+                                <input type="text" name="subject_name" class="form-control" placeholder="Programming" required>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label text-muted small fw-bold">ASSIGN TO CLASS</label>
+                            {% if not classes %}
+                            <div class="alert alert-danger p-2 small">Please create a Class first!</div>
+                            {% endif %}
+                            <select name="class_id" class="form-select" required>
+                                <option value="" disabled selected>Select a class...</option>
+                                {% for cls in classes %}
+                                <option value="{{ cls._id }}">{{ cls.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label text-muted small fw-bold">ASSIGN TEACHER</label>
+                            {% if not teachers %}
+                            <div class="alert alert-danger p-2 small">Please create a Teacher first in the Teachers menu!</div>
+                            {% endif %}
+                            <select name="teacher_id" class="form-select" required>
+                                <option value="" disabled selected>Select a teacher...</option>
+                                {% for tech in teachers %}
+                                <option value="{{ tech._id }}">{{ tech.full_name }} ({{ tech.teacher_id }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <label class="form-label text-muted small fw-bold">WEEKLY HOURS</label>
+                                <input type="number" name="weekly_hours" class="form-control" min="1" max="10" placeholder="e.g. 4" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-muted small fw-bold">TYPE</label>
+                                <select name="type" class="form-select">
+                                    <option>Theory</option>
+                                    <option>Lab</option>
+                                </select>
+                            </div>
+                        </div>
+                        {% if session.get('role') == 'admin' %}
+                        <button type="submit" class="btn btn-warning text-dark w-100 fw-bold shadow-sm">Map Subject</button>
+                        {% else %}
+                        <button type="button" class="btn btn-secondary w-100 fw-bold shadow-sm disabled">Admins Only</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject List Table -->
+        <div class="col-lg-8">
+            <div class="card dash-card h-100">
+                <div class="card-header bg-white pt-4 pb-0 border-0">
+                    <h6 class="fw-bold"><i class="fa-solid fa-book me-2 text-warning"></i>Subject Directory</h6>
+                </div>
+                <div class="card-body p-0 mt-3">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Code</th>
+                                    <th>Subject</th>
+                                    <th>Class</th>
+                                    <th>Teacher</th>
+                                    <th>Hours</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sub in subjects %}
+                                <tr>
+                                    <td class="ps-4 fw-bold text-muted">{{ sub.subject_code }}</td>
+                                    <td>
+                                        <div class="fw-bold">{{ sub.subject_name }}</div>
+                                        <small class="badge bg-light text-dark border">{{ sub.type }}</small>
+                                    </td>
+                                    <td>
+                                        {% for c in classes if sub.class_id == c._id|string %}
+                                            {{ c.name }}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for t in teachers if sub.teacher_id == t._id|string %}
+                                            <i class="fa-solid fa-user-tie text-muted me-1"></i> {{ t.full_name }}
+                                        {% endfor %}
+                                    </td>
+                                    <td><span class="badge bg-warning-soft text-warning fw-bold">{{ sub.weekly_hours }} hrs</span></td>
+                                    <td class="text-end pe-4">
+                                        {% if session.get('role') == 'admin' %}
+                                        <form action="{{ url_for('academic.delete_subject', id=sub._id) }}" method="POST" onsubmit="return confirm('Delete this subject mapping?');">
+                                            <button type="submit" class="btn btn-sm btn-light text-danger"><i class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                        {% else %}
+                                        - 
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="6" class="text-center py-4 text-muted">No subjects assigned yet.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

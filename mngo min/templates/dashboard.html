@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %} - Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-0 fw-bold">Dashboard Overview</h4>
+            <p class="text-muted mb-0">Welcome back! Here's what's happening today.</p>
+        </div>
+        <div>
+            <button class="btn btn-primary shadow-sm"><i class="fa-solid fa-plus me-1"></i> Quick Action</button>
+        </div>
+    </div>
+
+    <!-- Summary Cards Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="dash-card bg-primary-soft h-100">
+                <div class="card-body">
+                    <div>
+                        <h6 class="text-muted fw-bold mb-1">TOTAL STUDENTS</h6>
+                        <h2 class="mb-0 fw-bold text-primary">{{ students }}</h2>
+                    </div>
+                    <div class="dash-icon text-primary">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dash-card bg-success-soft h-100">
+                <div class="card-body">
+                    <div>
+                        <h6 class="text-muted fw-bold mb-1">TOTAL TEACHERS</h6>
+                        <h2 class="mb-0 fw-bold text-success">{{ teachers }}</h2>
+                    </div>
+                    <div class="dash-icon text-success">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dash-card bg-info-soft h-100">
+                <div class="card-body">
+                    <div>
+                        <h6 class="text-muted fw-bold mb-1">DEPARTMENTS</h6>
+                        <h2 class="mb-0 fw-bold text-info">{{ departments }}</h2>
+                    </div>
+                    <div class="dash-icon text-info">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dash-card bg-warning-soft h-100">
+                <div class="card-body">
+                    <div>
+                        <h6 class="text-muted fw-bold mb-1">TOTAL SUBJECTS</h6>
+                        <h2 class="mb-0 fw-bold text-warning">{{ subjects }}</h2>
+                    </div>
+                    <div class="dash-icon text-warning">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Cards Row -->
+    <div class="row g-4">
+        <!-- Attendance Chart Area (Placeholder) -->
+        <div class="col-lg-8">
+            <div class="card dash-card h-100">
+                <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0">Attendance Overview (Demo)</h6>
+                    <span class="badge bg-light text-dark border">This Week</span>
+                </div>
+                <div class="card-body pt-3">
+                    <div class="d-flex align-items-center justify-content-center bg-light rounded h-100" style="min-height: 250px;">
+                        <div class="text-center text-muted">
+                            <i class="fa-solid fa-chart-pie mb-2" style="font-size: 3rem; opacity: 0.2;"></i>
+                            <p class="mb-0">Chart Integration Coming Soon</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Notices -->
+        <div class="col-lg-4">
+            <div class="card dash-card h-100">
+                <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0">Recent Notices</h6>
+                    <a href="#" class="text-decoration-none small text-primary">View All</a>
+                </div>
+                <div class="card-body pt-3">
+                    <div class="list-group list-group-flush shadow-none">
+                        <div class="list-group-item px-0 border-bottom">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1 fw-bold">Semester Exams</h6>
+                                <small class="text-muted">3 days ago</small>
+                            </div>
+                            <p class="mb-1 small text-muted">Final exams will start from 15th next month. Please check timetable.</p>
+                        </div>
+                        <div class="list-group-item px-0 border-bottom">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1 fw-bold">Holiday Alert</h6>
+                                <small class="text-muted">1 week ago</small>
+                            </div>
+                            <p class="mb-1 small text-muted">College will remain closed on Friday due to national holiday.</p>
+                        </div>
+                        <div class="list-group-item px-0 pb-0 pt-3">
+                            <button class="btn btn-sm btn-outline-primary w-100"><i class="fa-solid fa-paper-plane me-1"></i> Send New Notice</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

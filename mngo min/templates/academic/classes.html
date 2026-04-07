@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %} - Classes & Departments{% endblock %}
+{% block page_title %}Academic Administration{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-4">
+        <!-- Add Class Form -->
+        <div class="col-lg-4">
+            <div class="card dash-card h-100">
+                <div class="card-header bg-white pt-4 pb-0 border-0">
+                    <h6 class="fw-bold"><i class="fa-solid fa-plus me-2 text-primary"></i>Add New Class</h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('academic.add_class') }}" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">CLASS NAME</label>
+                            <input type="text" name="name" class="form-control" placeholder="e.g. CS 3rd Year A" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">DEPARTMENT</label>
+                            <input type="text" name="department" class="form-control" placeholder="e.g. Computer Science" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-muted small fw-bold">SEMESTER</label>
+                            <input type="number" name="semester" class="form-control" min="1" max="8" required>
+                        </div>
+                        {% if session.get('role') == 'admin' %}
+                        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm">Save Class</button>
+                        {% else %}
+                        <button type="button" class="btn btn-secondary w-100 fw-bold shadow-sm disabled">Admins Only</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class List Table -->
+        <div class="col-lg-8">
+            <div class="card dash-card h-100">
+                <div class="card-header bg-white pt-4 pb-0 border-0">
+                    <h6 class="fw-bold"><i class="fa-solid fa-building me-2 text-primary"></i>Configured Classes</h6>
+                </div>
+                <div class="card-body p-0 mt-3">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Class Name</th>
+                                    <th>Department</th>
+                                    <th>Semester</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cls in classes %}
+                                <tr>
+                                    <td class="ps-4 fw-bold text-dark">{{ cls.name }}</td>
+                                    <td><span class="badge bg-primary-soft text-primary">{{ cls.department }}</span></td>
+                                    <td>Sem {{ cls.semester }}</td>
+                                    <td class="text-end pe-4">
+                                        {% if session.get('role') == 'admin' %}
+                                        <form action="{{ url_for('academic.delete_class', id=cls._id) }}" method="POST" onsubmit="return confirm('Delete this class?');">
+                                            <button type="submit" class="btn btn-sm btn-light text-danger"><i class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                        {% else %}
+                                        <span class="text-muted small">No Access</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="4" class="text-center py-4 text-muted">No classes configured. Add one to start.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

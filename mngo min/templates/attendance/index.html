@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %} - Attendance{% endblock %}
+{% block page_title %}Attendance Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card dash-card mb-4">
+        <div class="card-body">
+            <form action="{{ url_for('attendance.index') }}" method="GET" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">SELECT CLASS</label>
+                    <select name="class_id" class="form-select" required>
+                        <option value="" disabled {% if not selected_class_id %}selected{% endif %}>Choose...</option>
+                        {% for cls in classes %}
+                        <option value="{{ cls._id }}" {% if selected_class_id == cls._id|string %}selected{% endif %}>{{ cls.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">SELECT DATE</label>
+                    <input type="date" name="date" class="form-control" value="{{ selected_date }}" required>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm">Load Roster</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_class_id %}
+    <div class="card dash-card">
+        <div class="card-header bg-white pt-4 pb-0 border-0 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold"><i class="fa-solid fa-clipboard-user me-2 text-primary"></i>Class Roster</h6>
+            <span class="badge bg-light text-dark border">{{ students|length }} Students</span>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('attendance.index') }}" method="POST">
+                <input type="hidden" name="class_id" value="{{ selected_class_id }}">
+                <input type="hidden" name="date" value="{{ selected_date }}">
+                <input type="hidden" name="save_attendance" value="1">
+                
+                <div class="table-responsive mb-4">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            {% set sid = student._id|string %}
+                            {% set status = attendance_record.get(sid, 'Present') %}
+                            <tr>
+                                <td class="fw-bold text-muted">{{ student.student_id }}</td>
+                                <td>{{ student.full_name }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="btn-group shadow-sm" role="group">
+                                            <input type="radio" class="btn-check" name="status_{{ sid }}" id="present_{{ sid }}" value="Present" {% if status == 'Present' %}checked{% endif %}>
+                                            <label class="btn btn-outline-success px-4" for="present_{{ sid }}">Present</label>
+
+                                            <input type="radio" class="btn-check" name="status_{{ sid }}" id="absent_{{ sid }}" value="Absent" {% if status == 'Absent' %}checked{% endif %}>
+                                            <label class="btn btn-outline-danger px-4" for="absent_{{ sid }}">Absent</label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3" class="text-center text-muted py-4">No students found matching this class department.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if students and session.get('role') in ['admin', 'teacher'] %}
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">Save Register</button>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

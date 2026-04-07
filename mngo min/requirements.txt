@@ -1,0 +1,6 @@
+Flask
+Flask-PyMongo
+python-dotenv
+Werkzeug
+gunicorn
+opencv-python

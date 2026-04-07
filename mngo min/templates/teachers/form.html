@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %} - {% if teacher %}Edit{% else %}Add{% endif %} Teacher{% endblock %}
+{% block page_title %}{% if teacher %}Edit{% else %}Add{% endif %} Teacher{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card dash-card border-0 mb-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">Teacher Information</h5>
+                    <a href="{{ url_for('teacher.index') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back
+                    </a>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <!-- Basic Info Row -->
+                        <h6 class="text-success fw-bold text-uppercase mb-3" style="font-size:0.85rem; letter-spacing:1px;">Basic Details</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Teacher ID</label>
+                                <input type="text" class="form-control" name="teacher_id" placeholder="e.g. TCH801" value="{{ teacher.teacher_id if teacher else '' }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" name="full_name" placeholder="Sarah Jenkins" value="{{ teacher.full_name if teacher else '' }}" required>
+                            </div>
+                        </div>
+
+                        <!-- Academic Info Row -->
+                        <h6 class="text-success fw-bold text-uppercase mb-3" style="font-size:0.85rem; letter-spacing:1px;">Professional Details</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Department</label>
+                                <input type="text" class="form-control" name="department" placeholder="e.g. Mechanical" value="{{ teacher.department if teacher else '' }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Subject Specialization</label>
+                                <input type="text" class="form-control" name="specialization" placeholder="e.g. Thermodynamics" value="{{ teacher.specialization if teacher else '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Available Hours</label>
+                                <input type="text" class="form-control" name="available_hours" placeholder="e.g. 9:00 AM - 4:00 PM" value="{{ teacher.available_hours if teacher else '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Max Classes Per Day</label>
+                                <input type="number" class="form-control" name="max_classes" placeholder="e.g. 4" min="1" max="10" value="{{ teacher.max_classes if teacher else '4' }}">
+                            </div>
+                        </div>
+
+                        <!-- Contact Info Row -->
+                        <h6 class="text-success fw-bold text-uppercase mb-3" style="font-size:0.85rem; letter-spacing:1px;">Contact Details</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+                                    <input type="tel" class="form-control" name="phone" value="{{ teacher.phone if teacher else '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                                    <input type="email" class="form-control" name="email" value="{{ teacher.email if teacher else '' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="text-muted">
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ url_for('teacher.index') }}" class="btn btn-light me-3 px-4 fw-medium border">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">
+                                {% if teacher %}<i class="fa-solid fa-save me-1"></i> Update Details{% else %}<i class="fa-solid fa-user-plus me-1"></i> Register Teacher{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

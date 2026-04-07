@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %} - Timetable Generator{% endblock %}
+{% block page_title %}Smart Timetable System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-4 mb-4">
+        <!-- Controls -->
+        <div class="col-lg-12">
+            <div class="card dash-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-1">AI-Lite Generator</h5>
+                        <p class="text-muted small mb-0">Automatically assigns slots avoiding teacher overlap.</p>
+                    </div>
+                    
+                    <div class="d-flex align-items-center">
+                        {% if session.get('role') == 'admin' %}
+                        <form action="{{ url_for('timetable.generate') }}" method="POST" class="me-3">
+                            <button type="submit" class="btn btn-warning shadow-sm fw-bold">
+                                <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Generate New Timetable
+                            </button>
+                        </form>
+                        {% endif %}
+                        
+                        <form action="{{ url_for('timetable.index') }}" method="GET" class="d-flex">
+                            <select name="class_id" class="form-select me-2 shadow-sm" onchange="this.form.submit()">
+                                <option value="" disabled selected>Select a Class to View...</option>
+                                {% for cls in classes %}
+                                <option value="{{ cls._id }}" {% if selected_class_id == cls._id|string %}selected{% endif %}>{{ cls.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Display -->
+    {% if selected_class_id %}
+        {% if display_table %}
+        <div class="card dash-card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center align-middle mb-0" style="table-layout: fixed;">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:120px;">Day / Time</th>
+                                <th>Period 1<br><small class="text-muted">9:00 - 10:00</small></th>
+                                <th>Period 2<br><small class="text-muted">10:00 - 11:00</small></th>
+                                <th>Period 3<br><small class="text-muted">11:15 - 12:15</small></th>
+                                <th>Period 4<br><small class="text-muted">1:00 - 2:00</small></th>
+                                <th>Period 5<br><small class="text-muted">2:00 - 3:00</small></th>
+                                <th>Period 6<br><small class="text-muted">3:15 - 4:15</small></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] %}
+                            <tr>
+                                <td class="fw-bold bg-light">{{ day }}</td>
+                                {% for slot in display_table[day] %}
+                                    {% if slot == "Free" %}
+                                        <td class="text-muted bg-light" style="opacity: 0.5;">Free</td>
+                                    {% else %}
+                                        <td class="bg-primary-soft border-primary" style="border-width: 1px;">
+                                            <div class="fw-bold text-primary mb-1">{{ slot['subject_name'] }}</div>
+                                            <span class="badge bg-white text-dark border">{{ slot['type'] }}</span><br>
+                                            <small class="text-muted"><i class="fa-solid fa-user-tie"></i> {{ teachers.get(slot['teacher_id'], 'Unknown') }}</small>
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info shadow-sm">
+            <i class="fa-solid fa-circle-info me-2"></i> No timetable exists for this class yet. Generate one first!
+        </div>
+        {% endif %}
+    {% elif not has_schedule and session.get('role') == 'admin' %}
+    <div class="d-flex flex-column align-items-center justify-content-center text-center p-5">
+        <i class="fa-regular fa-calendar-xmark text-muted mb-3" style="font-size: 4rem; opacity: 0.3;"></i>
+        <h5 class="text-muted">No Timetable Detected</h5>
+        <p class="text-muted small">Configure Classes and Subjects, then click Generate.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

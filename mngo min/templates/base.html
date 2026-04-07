@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Lite SMS {% block title %}{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    {% if session.get('user_id') %}
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-heading">
+            <i class="fa-solid fa-graduation-cap me-2"></i>AI-Lite SMS
+        </div>
+        <a href="{{ url_for('dashboard.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('dashboard') else '' }}"><i class="fa-solid fa-chart-line me-2"></i> Dashboard</a>
+        <a href="{{ url_for('student.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('student') else '' }}"><i class="fa-solid fa-users me-2"></i> Students</a>
+        <a href="{{ url_for('teacher.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('teacher') else '' }}"><i class="fa-solid fa-chalkboard-user me-2"></i> Teachers</a>
+        <a href="{{ url_for('academic.classes_index') }}" class="{{ 'active' if request.endpoint and request.endpoint == 'academic.classes_index' else '' }}"><i class="fa-solid fa-building me-2"></i> Departments</a>
+        <a href="{{ url_for('academic.subjects_index') }}" class="{{ 'active' if request.endpoint and request.endpoint == 'academic.subjects_index' else '' }}"><i class="fa-solid fa-book me-2"></i> Subjects</a>
+        <a href="{{ url_for('timetable.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('timetable') else '' }}"><i class="fa-regular fa-calendar-days me-2"></i> Timetable</a>
+        <a href="{{ url_for('attendance.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('attendance') else '' }}"><i class="fa-solid fa-clipboard-user me-2"></i> Attendance</a>
+        <a href="{{ url_for('face.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('face') else '' }}"><i class="fa-solid fa-camera me-2"></i> Face Scan</a>
+        <a href="{{ url_for('notice.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('notice') else '' }}"><i class="fa-solid fa-bell me-2"></i> Notices</a>
+    </div>
+
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+        <div class="nav-title fw-bold">
+            {% block page_title %}Dashboard{% endblock %}
+        </div>
+        <div class="nav-actions d-flex align-items-center">
+            <span class="me-3 fw-medium">Welcome, </span>
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle rounded-pill" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-user-circle me-1"></i> {{ session.get('username')|capitalize }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user me-2"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-gear me-2"></i> Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="{% if session.get('user_id') %}main-content{% endif %}">
+        <!-- Flash Messages -->
+        <div class="container-fluid mt-3">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        {% if msg is string %}
+                            <div class="alert alert-info alert-dismissible fade show shadow-sm border-0" role="alert">
+                                {{ msg }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-{{ msg[0] }} alert-dismissible fade show shadow-sm border-0" role="alert">
+                                {{ msg[1] }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
